@@ -137,7 +137,7 @@
             ClientSize = new Size(800, 450);
             Controls.Add(splitContainer1);
             Name = "frmReportes";
-            Text = "frmReportes";
+            Text = "Reportes";
             Load += frmReportes_Load;
             splitContainer1.Panel1.ResumeLayout(false);
             splitContainer1.Panel1.PerformLayout();

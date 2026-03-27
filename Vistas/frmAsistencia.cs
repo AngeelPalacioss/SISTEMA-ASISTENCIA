@@ -147,9 +147,9 @@ namespace PRAC3_ASISTENCIA.Vistas
                 string fecha = dtpFecha.Value.ToString("yyyy-MM-dd");
 
                 string querySesion = $@"
-            SELECT id_sesion 
-            FROM sesiones 
-            WHERE id_grupo = {idGrupo} AND fecha = '{fecha}';";
+        SELECT id_sesion 
+        FROM sesiones 
+        WHERE id_grupo = {idGrupo} AND fecha = '{fecha}';";
 
                 var dsSesion = con.ejecutarConsulta(querySesion);
 
@@ -160,12 +160,19 @@ namespace PRAC3_ASISTENCIA.Vistas
                 else
                 {
                     string insertSesion = $@"
-                INSERT INTO sesiones (id_grupo, fecha) 
-                VALUES ({idGrupo}, '{fecha}');";
+            INSERT INTO sesiones (id_grupo, fecha) 
+            VALUES ({idGrupo}, '{fecha}');";
 
                     con.ejecutarComando(insertSesion);
 
                     var dsNueva = con.ejecutarConsulta(querySesion);
+
+                    if (dsNueva == null || dsNueva.Tables[0].Rows.Count == 0)
+                    {
+                        MessageBox.Show("No se pudo crear la sesión");
+                        return;
+                    }
+
                     idSesion = Convert.ToInt32(dsNueva.Tables[0].Rows[0]["id_sesion"]);
                 }
 
@@ -179,14 +186,15 @@ namespace PRAC3_ASISTENCIA.Vistas
                     int idAlumno = Convert.ToInt32(row.Cells["id_alumno"].Value);
 
                     bool estado = false;
+
                     if (row.Cells["Asistencia"].Value != null)
                     {
                         estado = Convert.ToBoolean(row.Cells["Asistencia"].Value);
                     }
 
                     string insert = $@"
-                INSERT INTO asistencias (id_sesion, id_alumno, estado)
-                VALUES ({idSesion}, {idAlumno}, {(estado ? 1 : 0)});";
+            INSERT INTO asistencias (id_sesion, id_alumno, estado)
+            VALUES ({idSesion}, {idAlumno}, {(estado ? 1 : 0)});";
 
                     con.ejecutarComando(insert);
                 }
@@ -196,7 +204,6 @@ namespace PRAC3_ASISTENCIA.Vistas
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
-
             }
         }
 
